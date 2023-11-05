@@ -7,26 +7,31 @@ body {
   margin: 10px 0;
 }
 
-.form-floating h1, p {
+/* Estilo para o formulário */
+.form-floating {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
   text-align: center;
 }
 
 .form-signin {
-  max-width: 350px;
-  padding: .5rem;
-  text-align: center; /* Alinhar o texto no centro */
+  margin-bottom: 15px;
 }
 
-.form-signin .form-floating:focus-within {
-  z-index: 2;
+/* Estilo para o botão */
+.form-signin button {
+  font-size: 18px;
 }
 
-.form-signin input[type="email"] {
-  border-radius: 1;
-
-  width: 100%;
+/* Estilo para o rodapé */
+.text-body-secondary {
+  text-align: center;
 }
 
-.form-signin input[type="password"] {
-  border-radius: 1;
+/* Estilos responsivos para telas menores */
+@media (max-width: 768px) {
+  .form-floating {
+    max-width: 100%;
+  }
 }
