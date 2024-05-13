@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 
-const Home: React.FC = () => {
-  const [message, setMessage] = useState('');
+type UserProps = {
+    user: {
+        first_name: string;
+        last_name: string;
+        email?: string;
+    } | null;  // Indicates that user can be an object with user data or null
+};
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await axios.get('user');
-        const user = response.data;
-        setMessage(`Hi ${user.first_name} ${user.last_name}`);
-      } catch (e) {
-        setMessage('You are not logged in!');
-      }
-    })();
-  }, []);
+const Home: React.FC<UserProps> = ({ user }) => {
+  let message;
+  if(user){
+    message = `Hi ${user.first_name} ${user.last_name}`;
+  } else{
+    message = 'You are not logged in!';
+  }
   return (
     <div className="container">
       <h1>{message}</h1>
@@ -22,4 +22,4 @@ const Home: React.FC = () => {
   );
 }
 
-export default Home;
+export default Home
