@@ -1,6 +1,6 @@
 import React, { useState, SyntheticEvent } from 'react';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
   const [email, setEmail] = useState('');
@@ -50,6 +50,9 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
         <input type="password" className="form-control" placeholder="Password" required 
           onChange={e => setPassword(e.target.value)}
         />
+        <div className="mb-3">
+          <Link to="/forgot">Forgot Password?</Link>
+        </div>
       </div>
       <button className="form-signin btn btn-primary w-100 py-2" type="submit">Sign in</button>
       <p className="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p>

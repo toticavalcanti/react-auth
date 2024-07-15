@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import Forgot from "./pages/Forgot";
 import Nav from "./components/Nav";
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
           <Route path="/" element={<Home user={user} />} />
           <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot" element={<Forgot/>} />
         </Routes>
       </Router>
     </div>
