@@ -1,6 +1,6 @@
 import React, { useState, SyntheticEvent } from 'react';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const getApiUrl = () => {
   return process.env.REACT_APP_API_URL || 'http://localhost:3000';
@@ -12,52 +12,73 @@ const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [redirect, setRedirect] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setError('');
 
+    const apiUrl = getApiUrl();
+    console.log('Tentando registrar com URL:', apiUrl);
+
     try {
-      const response = await axios.post(`${getApiUrl()}/api/register`, {
+      console.log('Dados do formulário:', {
         first_name: firstName,
         last_name: lastName,
         email,
         password,
         confirm_password: confirmPassword,
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true
       });
 
-      if (response.status === 200) {
-        setRedirect(true);
+      const response = await axios.post(
+        `${apiUrl}/api/register`,
+        {
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+          confirm_password: confirmPassword,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log('Resposta do servidor:', {
+        status: response.status,
+        statusText: response.statusText,
+        data: response.data,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        console.log('Registro bem sucedido, redirecionando...');
+        navigate('/login'); // Redireciona diretamente
       }
     } catch (error: any) {
+      console.log('Erro detalhado:', error);
+
       if (error.response) {
-        setError(error.response.data.message || 'Registration failed');
+        const errorMsg = error.response.data.message || 'Registration failed';
+        console.log('Mensagem de erro:', errorMsg);
+        setError(errorMsg);
       } else if (error.request) {
         setError('No response from server');
       } else {
         setError('Error during registration');
       }
 
-      // Log detalhado apenas em desenvolvimento
       if (process.env.REACT_APP_LOG_LEVEL === 'debug') {
         console.error('Registration error:', error);
       }
     }
   };
 
-  if (redirect) {
-    return <Navigate to="/login" />;
-  }
-
   return (
-    <form className='form-floating' onSubmit={submit}>
+    <form className="form-floating" onSubmit={submit}>
       <h1 className="h3 mb-3 fw-normal">Please register</h1>
 
       {error && (
@@ -67,50 +88,50 @@ const Register: React.FC = () => {
       )}
 
       <div className="form-signin">
-        <input 
-          className="form-control" 
-          placeholder="First Name" 
-          required 
-          onChange={e => setFirstName(e.target.value)}
+        <input
+          className="form-control"
+          placeholder="First Name"
+          required
+          onChange={(e) => setFirstName(e.target.value)}
         />
       </div>
 
       <div className="form-signin">
-        <input 
-          className="form-control" 
-          placeholder="Last Name" 
-          required 
-          onChange={e => setLastName(e.target.value)}
+        <input
+          className="form-control"
+          placeholder="Last Name"
+          required
+          onChange={(e) => setLastName(e.target.value)}
         />
       </div>
 
       <div className="form-signin">
-        <input 
-          type="email" 
-          className="form-control" 
-          placeholder="name@example.com" 
-          required 
-          onChange={e => setEmail(e.target.value)}
+        <input
+          type="email"
+          className="form-control"
+          placeholder="name@example.com"
+          required
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
 
       <div className="form-signin">
-        <input 
-          type="password" 
-          className="form-control" 
-          placeholder="Password" 
-          required 
-          onChange={e => setPassword(e.target.value)}
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Password"
+          required
+          onChange={(e) => setPassword(e.target.value)}
         />
       </div>
 
       <div className="form-signin">
-        <input 
-          type="password" 
-          className="form-control" 
-          placeholder="Confirm Password" 
-          required 
-          onChange={e => setConfirmPassword(e.target.value)}
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Confirm Password"
+          required
+          onChange={(e) => setConfirmPassword(e.target.value)}
         />
       </div>
 
