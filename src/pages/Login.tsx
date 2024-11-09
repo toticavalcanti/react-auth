@@ -2,61 +2,101 @@ import React, { useState, SyntheticEvent } from 'react';
 import axios from 'axios';
 import { Navigate, Link } from 'react-router-dom';
 
+// Função helper para obter URL da API
+const getApiUrl = () => {
+  return process.env.REACT_APP_API_URL || 'http://localhost:3000';
+};
+
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState(''); // Adicionando estado para erro
+
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
-    // Using environment variable for API URL
-    const apiURL = process.env.REACT_APP_API_URL || 'http://localhost:3000'; // Fallback to localhost if environment variable is not set
+    setError(''); // Limpa erro anterior
 
     try {
-        // Fix axios.post call with URL and data as separate arguments
-        const response = await axios.post(`${apiURL}/api/login`, {
-          email, // Simplification, since the name of the property and variable are the same
-          password,
-        });
+      const response = await axios.post(`${getApiUrl()}/api/login`, {
+        email,
+        password
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true // Importante para cookies
+      });
 
-        // Check the response here (example: whether login was successful based on the response status)
-        if (response.status === 200) {
-          // If the response is successful, set the state to redirect
-          setLogin(true);
-          setRedirect(true);
-        } else {
-          // Here you can handle other status codes or set a state to display an error message
-          console.error("Login falhou com status:", response.status);
-          // Ideally I would set an error state here to inform the user that login failed
+      if (response.status === 200) {
+        if (response.data.jwt) {
+          // Armazena JWT apenas se necessário
+          localStorage.setItem('jwt', response.data.jwt);
         }
-      } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      // Here you could also set an error state to inform the user about the problem
+        setLogin(true);
+        setRedirect(true);
+      }
+    } catch (error: any) {
+      // Tratamento de erro mais amigável
+      if (error.response) {
+        setError(error.response.data.message || 'Login failed');
+      } else if (error.request) {
+        setError('No response from server');
+      } else {
+        setError('Error during login');
+      }
+
+      // Log de erro em desenvolvimento
+      if (process.env.REACT_APP_LOG_LEVEL === 'debug') {
+        console.error('Login error:', error);
+      }
     }
   };
 
-  if(redirect){
-    return <Navigate to="/"/>;
+  if (redirect) {
+    return <Navigate to="/" />;
   }
+
   return (
     <form className='form-floating' onSubmit={submit}>
       <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
+      
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
       <div className="form-signin">
-        <input type="email" className="form-control" placeholder="name@example.com" required 
+        <input 
+          type="email" 
+          className="form-control" 
+          placeholder="name@example.com" 
+          required 
           onChange={e => setEmail(e.target.value)}
         />
       </div>
+
       <div className="form-signin">
-        <input type="password" className="form-control" placeholder="Password" required 
+        <input 
+          type="password" 
+          className="form-control" 
+          placeholder="Password" 
+          required 
           onChange={e => setPassword(e.target.value)}
         />
         <div className="mb-3">
           <Link to="/forgot">Forgot Password?</Link>
         </div>
       </div>
-      <button className="form-signin btn btn-primary w-100 py-2" type="submit">Sign in</button>
-      <p className="mt-5 mb-3 text-body-secondary">&copy; 2017–2024</p>
+
+      <button className="form-signin btn btn-primary w-100 py-2" type="submit">
+        Sign in
+      </button>
+
+      <p className="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
     </form>
   );
 }
+
 export default Login;
