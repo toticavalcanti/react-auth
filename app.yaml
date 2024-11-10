@@ -1,0 +1,17 @@
+runtime: nodejs18  # ou a versão que você está usando
+
+env_variables:
+  REACT_APP_API_URL: "https://sua-api.appspot.com"  # URL do seu backend
+  REACT_APP_LOG_LEVEL: "error"  # configuração para produção
+
+handlers:
+- url: /static
+  static_dir: build/static
+
+- url: /(.*\.(json|ico|js|map|css))$
+  static_files: build/\1
+  upload: build/.*\.(json|ico|js|map|css)$
+
+- url: /.*
+  static_files: build/index.html
+  upload: build/index.html
