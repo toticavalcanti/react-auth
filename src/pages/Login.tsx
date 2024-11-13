@@ -18,19 +18,16 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     setError(''); // Limpa erro anterior
 
     try {
+      // Requisição simplificada (sem headers ou withCredentials)
       const response = await axios.post(`${getApiUrl()}/api/login`, {
         email,
         password
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true // Importante para cookies
       });
 
+      // Checa o status da resposta
       if (response.status === 200) {
         if (response.data.jwt) {
-          // Armazena JWT apenas se necessário
+          // Armazena JWT localmente
           localStorage.setItem('jwt', response.data.jwt);
         }
         setLogin(true);
@@ -53,14 +50,15 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     }
   };
 
+  // Redireciona em caso de sucesso
   if (redirect) {
     return <Navigate to="/" />;
   }
 
   return (
-    <form className='form-floating' onSubmit={submit}>
+    <form className="form-floating" onSubmit={submit}>
       <h1 className="h3 mb-3 fw-normal">Please sign in</h1>
-      
+
       {error && (
         <div className="alert alert-danger" role="alert">
           {error}
@@ -97,6 +95,6 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
       <p className="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
     </form>
   );
-}
+};
 
 export default Login;
