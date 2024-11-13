@@ -9,6 +9,11 @@ import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import Nav from "./components/Nav";
 
+// Helper function to get API URL
+const getApiUrl = () => {
+  return process.env.REACT_APP_API_URL || "http://localhost:3000";
+};
+
 function App() {
   const [user, setUser] = useState(null); // State to store user data
   const [login, setLogin] = useState(false);
@@ -16,9 +21,11 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        const response = await axios.get("user");
+        const response = await axios.get(`${getApiUrl()}/api/user`, {
+          withCredentials: true, // Ensures the JWT cookie is sent with the request
+        });
         const user = response.data;
-        setUser(user);// Update the state with user data
+        setUser(user); // Update the state with user data
       } catch (e) {
         console.error("Error loading user data", e);
         setUser(null); // Sets the user to null in case of error
@@ -29,7 +36,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Nav user={user} setLogin={ () => setLogin(false) }/>
+        <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
           <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
