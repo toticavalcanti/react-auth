@@ -18,25 +18,27 @@ function App() {
     console.log('Token no App:', token);
     
     if (token) {
-      // Garante que o token tem o prefixo 'Bearer '
-      const bearerToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
-      
-      // Configura header com o token
+      const authHeader = `Bearer ${token}`;
+      console.log('Auth Header:', authHeader);
+
       const config = {
         headers: {
-          'Authorization': bearerToken
+          'Authorization': authHeader,
+          'Accept': '*/*',
+          'Content-Type': 'application/json'
         }
       };
 
-      console.log('Config:', config);
+      console.log('Full config:', JSON.stringify(config));
 
-      axios.get('user', config)
+      axios.get('/api/user', config)
         .then(response => {
-          console.log('Resposta do user:', response.data);
+          console.log('Success:', response.data);
           setUser(response.data);
         })
         .catch(error => {
-          console.log('Erro ao buscar user:', error.response?.data);
+          console.log('Full error:', error);
+          console.log('Error response:', error.response);
           setUser(null);
           localStorage.removeItem('jwt');
         });
