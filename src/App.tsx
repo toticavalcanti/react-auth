@@ -9,48 +9,63 @@ import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import Nav from "./components/Nav";
 
+// Define o tipo do usuário
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+}
+
 function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
   const [login, setLogin] = useState(false);
 
+  // Determinar a URL base da API dinamicamente
+  const apiBaseUrl = process.env.REACT_APP_API_URL || "/api";
+
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    console.log('Token no App:', token);
-    
+    const token = localStorage.getItem("jwt");
+    console.log("Token no App:", token);
+
     if (token) {
       const authHeader = `Bearer ${token}`;
-      console.log('Auth Header:', authHeader);
+      console.log("Auth Header:", authHeader);
 
       const config = {
         headers: {
-          'Authorization': authHeader,
-          'Accept': '*/*',
-          'Content-Type': 'application/json'
-        }
+          Authorization: authHeader,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
       };
 
-      console.log('Full config:', JSON.stringify(config));
+      console.log("Full config:", JSON.stringify(config));
 
-      axios.get('user', config)
-        .then(response => {
-          console.log('Success:', response.data);
+      axios
+        .get(`${apiBaseUrl}/user`, config)
+        .then((response) => {
+          console.log("Success:", response.data);
           setUser(response.data);
         })
-        .catch(error => {
-          console.log('Full error:', error);
-          console.log('Error response:', error.response);
+        .catch((error) => {
+          console.log("Full error:", error);
+          console.log("Error response:", error.response);
           setUser(null);
-          localStorage.removeItem('jwt');
+          localStorage.removeItem("jwt");
         });
     }
-  }, [login]);
+  }, [login, apiBaseUrl]);
 
   return (
     <div className="App">
       <Router>
         <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
-          <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
+          <Route
+            path="/login"
+            element={<Login setLogin={() => setLogin(true)} />}
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
