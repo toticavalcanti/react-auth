@@ -14,22 +14,33 @@ function App() {
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    // Remove a configuração global anterior
+    delete axios.defaults.headers.common['Authorization'];
     
-    if (token) {
-      // Configura o token no axios para todas as requisições
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      axios.get('user')
-        .then(response => {
-          setUser(response.data);
-        })
-        .catch(() => {
-          setUser(null);
-          localStorage.removeItem('jwt');
-          delete axios.defaults.headers.common['Authorization'];
-        });
+    const token = localStorage.getItem('jwt');
+    if (!token) {
+      setUser(null);
+      return;
     }
+
+    // Configura o token
+    const authHeader = `Bearer ${token}`;
+    axios.defaults.headers.common['Authorization'] = authHeader;
+
+    // Faz a requisição com o header explícito também
+    axios.get('user', {
+      headers: {
+        'Authorization': authHeader
+      }
+    })
+    .then(response => {
+      setUser(response.data);
+    })
+    .catch(() => {
+      setUser(null);
+      localStorage.removeItem('jwt');
+      delete axios.defaults.headers.common['Authorization'];
+    });
   }, [login]);
 
   return (
