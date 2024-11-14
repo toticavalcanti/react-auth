@@ -16,28 +16,27 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     console.log('Token no App:', token);
+    console.log('Base URL:', axios.defaults.baseURL);
     
     if (token) {
-      // Configure os headers completos
       const headers = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
         'Accept': 'application/json'
       };
 
-      // Configure globalmente
       axios.defaults.headers.common = headers;
       
-      console.log('Headers configurados:', axios.defaults.headers.common);
+      console.log('Fazendo requisição para:', `${axios.defaults.baseURL}/user`);
+      console.log('Headers configurados:', headers);
 
-      // Use os mesmos headers na requisição
-      axios.get('user', { headers })
+      axios.get('/user', { headers })
         .then(response => {
           console.log('Resposta do user:', response.data);
           setUser(response.data);
         })
         .catch(error => {
-          console.log('Erro ao buscar user:', error.response || error);
+          console.log('Erro ao buscar user:', error.response?.data || error);
           setUser(null);
           localStorage.removeItem('jwt');
           delete axios.defaults.headers.common['Authorization'];

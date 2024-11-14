@@ -12,6 +12,7 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     e.preventDefault();
     setError('');
     console.log('1. Iniciando login...');
+    console.log('Base URL:', axios.defaults.baseURL);
 
     try {
       console.log('2. Fazendo requisição POST para /login');
@@ -27,15 +28,17 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
         localStorage.setItem('jwt', response.data.jwt);
         console.log('5. Token salvo no localStorage:', localStorage.getItem('jwt'));
         
-        // Configurar o token no axios imediatamente após o login
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.jwt}`;
-        console.log('6. Token configurado no axios');
+        const headers = {
+          'Authorization': `Bearer ${response.data.jwt}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        };
+        
+        axios.defaults.headers.common = headers;
+        console.log('6. Token configurado no axios:', headers);
         
         setLogin(true);
         setRedirect(true);
-      } else {
-        console.log('4. Erro: Token não recebido na resposta');
-        setError('Token não recebido');
       }
     } catch (error: any) {
       console.log('Erro durante login:', error);
