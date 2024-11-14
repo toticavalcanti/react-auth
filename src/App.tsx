@@ -14,33 +14,35 @@ function App() {
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
-    // Remove a configuração global anterior
-    delete axios.defaults.headers.common['Authorization'];
-    
     const token = localStorage.getItem('jwt');
-    if (!token) {
-      setUser(null);
-      return;
+    console.log('Token no App:', token);
+    
+    if (token) {
+      // Configure os headers completos
+      const headers = {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      };
+
+      // Configure globalmente
+      axios.defaults.headers.common = headers;
+      
+      console.log('Headers configurados:', axios.defaults.headers.common);
+
+      // Use os mesmos headers na requisição
+      axios.get('user', { headers })
+        .then(response => {
+          console.log('Resposta do user:', response.data);
+          setUser(response.data);
+        })
+        .catch(error => {
+          console.log('Erro ao buscar user:', error.response || error);
+          setUser(null);
+          localStorage.removeItem('jwt');
+          delete axios.defaults.headers.common['Authorization'];
+        });
     }
-
-    // Configura o token
-    const authHeader = `Bearer ${token}`;
-    axios.defaults.headers.common['Authorization'] = authHeader;
-
-    // Faz a requisição com o header explícito também
-    axios.get('user', {
-      headers: {
-        'Authorization': authHeader
-      }
-    })
-    .then(response => {
-      setUser(response.data);
-    })
-    .catch(() => {
-      setUser(null);
-      localStorage.removeItem('jwt');
-      delete axios.defaults.headers.common['Authorization'];
-    });
   }, [login]);
 
   return (
