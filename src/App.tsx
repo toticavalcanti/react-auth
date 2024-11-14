@@ -11,29 +11,46 @@ import Nav from "./components/Nav";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [login, setLogin] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('jwt');
+    console.log('Token no App:', token);
+    
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get('/user')
+      const authHeader = `Bearer ${token}`;
+      console.log('Auth Header:', authHeader);
+
+      const config = {
+        headers: {
+          'Authorization': authHeader,
+          'Accept': '*/*',
+          'Content-Type': 'application/json'
+        }
+      };
+
+      console.log('Full config:', JSON.stringify(config));
+
+      axios.get('user', config)
         .then(response => {
+          console.log('Success:', response.data);
           setUser(response.data);
         })
         .catch(error => {
-          console.error('Erro ao buscar usuário:', error.response?.data || error.message);
+          console.log('Full error:', error);
+          console.log('Error response:', error.response);
           setUser(null);
           localStorage.removeItem('jwt');
         });
     }
-  }, []);
+  }, [login]);
 
   return (
     <div className="App">
       <Router>
-        <Nav user={user} />
+        <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
-          <Route path="/login" element={<Login setLogin={(loggedIn: boolean) => setUser(loggedIn ? {} : null)} />} />
+          <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
