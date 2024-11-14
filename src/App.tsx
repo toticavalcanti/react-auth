@@ -14,28 +14,22 @@ function App() {
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
-    (async () => {
-      const token = localStorage.getItem('jwt');
-      if (!token) {
-        setUser(null);
-        return;
-      }
-
-      try {
-        // Mudança aqui: adicionado /api/ na URL e headers completos
-        const response = await axios.get('/api/user', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+    const token = localStorage.getItem('jwt');
+    
+    if (token) {
+      // Configura o token no axios para todas as requisições
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      axios.get('/api/user')
+        .then(response => {
+          setUser(response.data);
+        })
+        .catch(() => {
+          setUser(null);
+          localStorage.removeItem('jwt');
+          delete axios.defaults.headers.common['Authorization'];
         });
-        setUser(response.data);
-      } catch (e) {
-        console.error("Error loading user data", e);
-        setUser(null);
-        localStorage.removeItem('jwt'); // Limpa o token se der erro
-      }
-    })();
+    }
   }, [login]);
 
   return (
