@@ -22,15 +22,18 @@ function App() {
       }
 
       try {
-        const response = await axios.get('user', {
+        // Mudança aqui: adicionado /api/ na URL e headers completos
+        const response = await axios.get('/api/user', {
           headers: {
-            'Authorization': `Bearer ${token}`
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         });
         setUser(response.data);
       } catch (e) {
         console.error("Error loading user data", e);
         setUser(null);
+        localStorage.removeItem('jwt'); // Limpa o token se der erro
       }
     })();
   }, [login]);
