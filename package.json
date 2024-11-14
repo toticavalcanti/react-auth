@@ -2,6 +2,7 @@
     "name": "react_auth",
     "version": "0.1.0",
     "private": true,
+    "homepage": ".",
     "dependencies": {
         "@babel/plugin-transform-class-properties": "^7.23.3",
         "@babel/plugin-transform-nullish-coalescing-operator": "^7.23.4",
