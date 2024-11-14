@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
 
 axios.defaults.baseURL = 'https://codigo-fluente-fiber-tutorial.onrender.com/api';
-axios.defaults.withCredentials = true;
+// Remove withCredentials já que não estamos usando cookies
+// axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

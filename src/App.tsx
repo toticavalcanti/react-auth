@@ -19,27 +19,30 @@ function App() {
     console.log('Base URL:', axios.defaults.baseURL);
     
     if (token) {
-      const headers = {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
+      // Simplificar configuração dos headers
+      const config = {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       };
-
-      axios.defaults.headers.common = headers;
       
       console.log('Fazendo requisição para:', `${axios.defaults.baseURL}/user`);
-      console.log('Headers configurados:', headers);
+      console.log('Config:', config);
 
-      axios.get('/user', { headers })
+      // Usar config em vez de headers separados
+      axios.get('/user', config)
         .then(response => {
           console.log('Resposta do user:', response.data);
           setUser(response.data);
         })
         .catch(error => {
-          console.log('Erro ao buscar user:', error.response?.data || error);
+          console.log('Erro detalhado:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            headers: error.response?.headers
+          });
           setUser(null);
           localStorage.removeItem('jwt');
-          delete axios.defaults.headers.common['Authorization'];
         });
     }
   }, [login]);
