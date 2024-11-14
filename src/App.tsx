@@ -9,26 +9,25 @@ import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import Nav from "./components/Nav";
 
-// Helper function to get API URL
-const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || "http://localhost:3000";
-};
-
 function App() {
-  const [user, setUser] = useState(null); // State to store user data
+  const [user, setUser] = useState(null);
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+
     (async () => {
       try {
-        const response = await axios.get(`${getApiUrl()}/api/user`, {
-          withCredentials: true, // Ensures the JWT cookie is sent with the request
-        });
-        const user = response.data;
-        setUser(user); // Update the state with user data
+        const response = await axios.get('user');
+        setUser(response.data);
       } catch (e) {
         console.error("Error loading user data", e);
-        setUser(null); // Sets the user to null in case of error
+        setUser(null);
+        localStorage.removeItem('jwt');
+        delete axios.defaults.headers.common['Authorization'];
       }
     })();
   }, [login]);
@@ -42,8 +41,6 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
-
-          {/* Protected route that requires authentication */}
           <Route path="/" element={<Home user={user} />} />
         </Routes>
       </Router>
