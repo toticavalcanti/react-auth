@@ -1,6 +1,6 @@
 import React, { useState, SyntheticEvent } from 'react';
-import axios from 'axios';
 import { Navigate, Link } from 'react-router-dom';
+import api from '../config/axios';
 
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
   const [email, setEmail] = useState('');
@@ -13,22 +13,19 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     setError('');
 
     try {
-      const response = await axios.post('login', {
+      const response = await api.post('login', {
         email,
         password
       });
 
-      if (response.status === 200 && response.data.jwt) {
+      if (response.data?.jwt) {
         localStorage.setItem('jwt', response.data.jwt);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.jwt}`;
         setLogin(true);
         setRedirect(true);
       }
     } catch (error: any) {
-      console.error('Erro completo:', error);
       localStorage.removeItem('jwt');
-      delete axios.defaults.headers.common['Authorization'];
-
+      
       if (error.response) {
         setError(error.response.data.message || 'Login failed');
       } else if (error.request) {
