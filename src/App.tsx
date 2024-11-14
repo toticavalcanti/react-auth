@@ -14,20 +14,23 @@ function App() {
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-
     (async () => {
+      const token = localStorage.getItem('jwt');
+      if (!token) {
+        setUser(null);
+        return;
+      }
+
       try {
-        const response = await axios.get('user');
+        const response = await axios.get('user', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         setUser(response.data);
       } catch (e) {
         console.error("Error loading user data", e);
         setUser(null);
-        localStorage.removeItem('jwt');
-        delete axios.defaults.headers.common['Authorization'];
       }
     })();
   }, [login]);

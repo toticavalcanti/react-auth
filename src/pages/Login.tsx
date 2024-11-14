@@ -1,6 +1,6 @@
 import React, { useState, SyntheticEvent } from 'react';
+import axios from 'axios';
 import { Navigate, Link } from 'react-router-dom';
-import api from '../config/axios';
 
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     setError('');
 
     try {
-      const response = await api.post('login', {
+      const response = await axios.post('login', {
         email,
         password
       });
