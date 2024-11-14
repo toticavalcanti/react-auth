@@ -33,7 +33,7 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
 
    try {
      console.log('Tentando login com:', { email, password });
-     const response = await axios.post('/api/login', {
+     const response = await axios.post('/login', {
        email,
        password
      });
