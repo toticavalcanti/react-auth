@@ -16,31 +16,27 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('jwt');
     console.log('Token no App:', token);
-    console.log('Base URL:', axios.defaults.baseURL);
     
     if (token) {
-      // Simplificar configuração dos headers
+      // Garante que o token tem o prefixo 'Bearer '
+      const bearerToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+      
+      // Configura header com o token
       const config = {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': bearerToken
         }
       };
-      
-      console.log('Fazendo requisição para:', `${axios.defaults.baseURL}/user`);
+
       console.log('Config:', config);
 
-      // Usar config em vez de headers separados
-      axios.get('/user', config)
+      axios.get('user', config)
         .then(response => {
           console.log('Resposta do user:', response.data);
           setUser(response.data);
         })
         .catch(error => {
-          console.log('Erro detalhado:', {
-            status: error.response?.status,
-            data: error.response?.data,
-            headers: error.response?.headers
-          });
+          console.log('Erro ao buscar user:', error.response?.data);
           setUser(null);
           localStorage.removeItem('jwt');
         });
