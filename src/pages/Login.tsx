@@ -4,17 +4,16 @@ import { Navigate, Link } from 'react-router-dom';
 
 // Função helper para obter URL da API
 const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || 'http://localhost:3000';
+  return process.env.REACT_APP_API_URL || 'http://localhost:3000/api';  // Adicionado /api
 };
 
 // Configuração global do axios
 axios.defaults.baseURL = getApiUrl();
-axios.defaults.withCredentials = true;  // Importante para cookies/sessões
 
 // Interceptor para adicionar token em todas as requisições
 axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('jwt');
-  if (token && config.headers) {  // Garantindo que headers existe
+  if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -33,46 +32,36 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     setError('');
 
     try {
-      // Primeiro: fazer login e obter token
-      const loginResponse = await axios.post('/login', {
+      const response = await axios.post('/login', {
         email,
         password
       });
 
-      if (loginResponse.status === 200 && loginResponse.data.jwt) {
-        // Salvar token
-        const token = loginResponse.data.jwt;
-        localStorage.setItem('jwt', token);
+      if (response.status === 200 && response.data.jwt) {
+        localStorage.setItem('jwt', response.data.jwt);
+        // Definir o token globalmente no axios
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.jwt}`;
         
-        // Configurar token nos headers
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        
-        // Verificar se a autenticação funcionou buscando dados do usuário
-        try {
-          await axios.get('/user');
-          // Se chegou aqui, a autenticação está ok
+        // Verificar se o token está funcionando
+        const userResponse = await axios.get('/user');
+        if (userResponse.status === 200) {
           setLogin(true);
           setRedirect(true);
-        } catch (userError) {
-          console.error('Erro ao buscar usuário:', userError);
-          setError('Erro ao verificar autenticação');
-          localStorage.removeItem('jwt');
-          setLogin(false);
         }
       }
     } catch (error: any) {
       console.error('Erro completo:', error);
+      // Limpar token em caso de erro
       localStorage.removeItem('jwt');
-      
+      delete axios.defaults.headers.common['Authorization'];
+
       if (error.response) {
-        setError(error.response.data.message || 'Falha no login');
+        setError(error.response.data.message || 'Login failed');
       } else if (error.request) {
-        setError('Sem resposta do servidor');
+        setError('No response from server');
       } else {
-        setError('Erro durante o login');
+        setError('Error during login');
       }
-      
-      setLogin(false);
     }
   };
 
