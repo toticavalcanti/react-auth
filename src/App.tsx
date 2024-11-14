@@ -20,7 +20,7 @@ function App() {
       // Configura o token no axios para todas as requisições
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      axios.get('/api/user')
+      axios.get('user')
         .then(response => {
           setUser(response.data);
         })
