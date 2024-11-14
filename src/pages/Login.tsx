@@ -2,25 +2,6 @@ import React, { useState, SyntheticEvent } from 'react';
 import axios from 'axios';
 import { Navigate, Link } from 'react-router-dom';
 
-// Função helper para obter URL da API
-const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || 'http://localhost:3000/api';  // Adicionado /api
-};
-
-// Configuração global do axios
-axios.defaults.baseURL = getApiUrl();
-
-// Interceptor para adicionar token em todas as requisições
-axios.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('jwt');
-  if (token && config.headers) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-}, function (error) {
-  return Promise.reject(error);
-});
-
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -32,26 +13,19 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
     setError('');
 
     try {
-      const response = await axios.post('/login', {
+      const response = await axios.post('login', {
         email,
         password
       });
 
       if (response.status === 200 && response.data.jwt) {
         localStorage.setItem('jwt', response.data.jwt);
-        // Definir o token globalmente no axios
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.jwt}`;
-        
-        // Verificar se o token está funcionando
-        const userResponse = await axios.get('/user');
-        if (userResponse.status === 200) {
-          setLogin(true);
-          setRedirect(true);
-        }
+        setLogin(true);
+        setRedirect(true);
       }
     } catch (error: any) {
       console.error('Erro completo:', error);
-      // Limpar token em caso de erro
       localStorage.removeItem('jwt');
       delete axios.defaults.headers.common['Authorization'];
 
