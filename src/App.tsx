@@ -31,7 +31,7 @@ function App() {
 
       console.log('Full config:', JSON.stringify(config));
 
-      axios.get('/api/user', config)
+      axios.get('/user', config)
         .then(response => {
           console.log('Success:', response.data);
           setUser(response.data);
