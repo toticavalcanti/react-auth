@@ -15,12 +15,18 @@ const Reset = () => {
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    setError("");
-    const apiUrl = getApiUrl();
-    console.log("Token:", token);
-    console.log("API URL:", apiUrl);
+    setError(""); // Reset any previous error
 
+    const apiUrl = getApiUrl();
+    console.log("Iniciando Reset de Senha");
+    console.log("Token recebido via URL:", token);
+    console.log("API Base URL:", apiUrl);
+    console.log("Password:", password);
+    console.log("Confirm Password:", confirmPassword);
+
+    // Verifica se as senhas correspondem
     if (password !== confirmPassword) {
+      console.error("As senhas não conferem!");
       setError("Passwords do not match!");
       return;
     }
@@ -40,18 +46,36 @@ const Reset = () => {
         }
       );
 
-      console.log("Response:", response.data);
+      console.log("Resposta do Servidor:", response.data);
+
       if (response.data?.message) {
+        console.log("Reset de senha realizado com sucesso!");
         setRedirect(true);
       }
     } catch (err: any) {
-      console.error("Full error:", err);
-      console.error("Response data:", err.response?.data);
-      setError(err.response?.data?.message || "Failed to reset password");
+      console.error("Erro ao realizar o Reset:", err);
+
+      // Erro de resposta do servidor
+      if (err.response) {
+        console.error("Erro de Resposta do Servidor:", err.response.data);
+        console.error("Status Code:", err.response.status);
+        setError(err.response?.data?.message || "Failed to reset password");
+      }
+      // Erro de requisição
+      else if (err.request) {
+        console.error("Nenhuma resposta do servidor. Erro de requisição:", err.request);
+        setError("No response from server.");
+      }
+      // Outro erro
+      else {
+        console.error("Erro durante a requisição:", err.message);
+        setError("An unexpected error occurred.");
+      }
     }
   };
 
   if (redirect) {
+    console.log("Redirecionando para /login após sucesso.");
     return <Navigate to="/login" />;
   }
 
