@@ -2,6 +2,10 @@ import React, { useState, SyntheticEvent } from "react";
 import axios from "axios";
 import { useParams, Navigate } from "react-router-dom";
 
+const getApiUrl = () => {
+  return process.env.REACT_APP_API_URL || "http://localhost:3000";
+};
+
 const Reset = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -9,12 +13,12 @@ const Reset = () => {
   const [error, setError] = useState("");
   const { token } = useParams<{ token: string }>();
 
-  const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
-
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    setError("");
+    const apiUrl = getApiUrl();
     console.log("Token:", token);
-    console.log("API URL:", apiBaseUrl);
+    console.log("API URL:", apiUrl);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
@@ -22,12 +26,20 @@ const Reset = () => {
     }
 
     try {
-      const response = await axios.post(`${apiBaseUrl}/reset`, {
-        token,
-        password,
-        confirm_password: confirmPassword
-      });
-      
+      const response = await axios.post(
+        `${apiUrl}/api/reset`,
+        {
+          token,
+          password,
+          confirm_password: confirmPassword,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       console.log("Response:", response.data);
       if (response.data?.message) {
         setRedirect(true);
