@@ -35,9 +35,13 @@ function App() {
         },
       };
 
+      console.log("Fetching user with token:", token);
+      console.log("API Base URL:", apiBaseUrl);
+
       axios
         .get(`${apiBaseUrl}/user`, config)
         .then((response) => {
+          console.log("User data fetched successfully:", response.data);
           setUser(response.data);
         })
         .catch((error) => {
@@ -58,7 +62,6 @@ function App() {
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
           <Route path="/" element={<Home user={user} />} />
-          {/* Rota coringa para capturar todas as outras URLs */}
           <Route path="*" element={<Home user={user} />} />
         </Routes>
       </Router>
