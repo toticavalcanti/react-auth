@@ -6,28 +6,28 @@ const Reset = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const [error, setError] = useState("");
   const { token } = useParams<{ token: string }>();
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
     try {
-      const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
-      await axios.post(`${apiBaseUrl}/reset`, {
+      await axios.post("/reset", {
         token,
         password,
         confirm_password: confirmPassword,
       });
 
       setRedirect(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error resetting password:", err);
-      alert("Failed to reset password. Please try again.");
+      setError(err.response?.data?.message || "Failed to reset password. Please try again.");
     }
   };
 
@@ -38,6 +38,12 @@ const Reset = () => {
   return (
     <form className="form-floating" onSubmit={submit}>
       <h1 className="h3 mb-3 fw-normal">Reset Password</h1>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
       <div className="form-signin">
         <input
