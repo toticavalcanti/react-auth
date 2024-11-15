@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -58,6 +58,7 @@ function App() {
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
           <Route path="/" element={<Home user={user} />} />
+          {/* Rota coringa para capturar todas as outras URLs */}
           <Route path="*" element={<Home user={user} />} />
         </Routes>
       </Router>
