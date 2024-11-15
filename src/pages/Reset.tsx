@@ -18,16 +18,19 @@ const Reset = () => {
     }
 
     try {
-      await axios.post("/reset", {
+      const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+      const response = await axios.post(`${apiBaseUrl}/reset`, {
         token,
         password,
-        confirm_password: confirmPassword,
+        confirm_password: confirmPassword
       });
-
-      setRedirect(true);
+      
+      if (response.data?.message) {
+        setRedirect(true);
+      }
     } catch (err: any) {
       console.error("Error resetting password:", err);
-      setError(err.response?.data?.message || "Failed to reset password. Please try again.");
+      setError(err.response?.data?.message || "Failed to reset password");
     }
   };
 
