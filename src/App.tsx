@@ -20,12 +20,13 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [login, setLogin] = useState(false);
 
-  // Configuração do axios
+  // Configuração global do axios
   axios.defaults.withCredentials = true;
   const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
+
     if (token) {
       const config = {
         headers: {
@@ -36,16 +37,16 @@ function App() {
       };
 
       console.log("Fetching user with token:", token);
-      console.log("API Base URL:", apiBaseUrl);
+      console.log("URL usada:", `${apiBaseUrl}/api/user`);
 
       axios
-        .get(`${apiBaseUrl}/user`, config)
+        .get(`${apiBaseUrl}/api/user`, config)
         .then((response) => {
-          console.log("User data fetched successfully:", response.data);
+          console.log("Resposta da API /user:", response.data);
           setUser(response.data);
         })
         .catch((error) => {
-          console.error("Error fetching user:", error);
+          console.error("Erro ao buscar o usuário:", error);
           setUser(null);
           localStorage.removeItem("jwt");
         });
