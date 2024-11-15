@@ -17,14 +17,14 @@ const Reset = () => {
     }
 
     try {
-      // Envia o token e as novas senhas para o backend
-      await axios.post("https://seu-backend.com/api/reset", {
+      const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+      await axios.post(`${apiBaseUrl}/reset`, {
         token,
         password,
         confirm_password: confirmPassword,
       });
 
-      setRedirect(true); // Redireciona após sucesso
+      setRedirect(true);
     } catch (err) {
       console.error("Error resetting password:", err);
       alert("Failed to reset password. Please try again.");
@@ -32,27 +32,40 @@ const Reset = () => {
   };
 
   if (redirect) {
-    return <Navigate to="/login" />; // Redireciona para login após sucesso
+    return <Navigate to="/login" />;
   }
 
   return (
-    <form onSubmit={submit}>
-      <h1>Reset Password</h1>
-      <input
-        type="password"
-        placeholder="New Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        required
-      />
-      <button type="submit">Reset Password</button>
+    <form className="form-floating" onSubmit={submit}>
+      <h1 className="h3 mb-3 fw-normal">Reset Password</h1>
+
+      <div className="form-signin">
+        <input
+          type="password"
+          className="form-control"
+          placeholder="New Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="form-signin">
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <button className="form-signin btn btn-primary w-100 py-2" type="submit">
+        Reset Password
+      </button>
+
+      <p className="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
     </form>
   );
 };
