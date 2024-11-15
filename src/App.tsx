@@ -58,7 +58,6 @@ function App() {
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
           <Route path="/" element={<Home user={user} />} />
-          {/* Rota coringa para capturar todas as outras URLs */}
           <Route path="*" element={<Home user={user} />} />
         </Routes>
       </Router>
