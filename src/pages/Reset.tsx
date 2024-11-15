@@ -9,8 +9,12 @@ const Reset = () => {
   const [error, setError] = useState("");
   const { token } = useParams<{ token: string }>();
 
+  const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
+
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    console.log("Token:", token);
+    console.log("API URL:", apiBaseUrl);
 
     if (password !== confirmPassword) {
       setError("Passwords do not match!");
@@ -18,18 +22,19 @@ const Reset = () => {
     }
 
     try {
-      const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
       const response = await axios.post(`${apiBaseUrl}/reset`, {
         token,
         password,
         confirm_password: confirmPassword
       });
       
+      console.log("Response:", response.data);
       if (response.data?.message) {
         setRedirect(true);
       }
     } catch (err: any) {
-      console.error("Error resetting password:", err);
+      console.error("Full error:", err);
+      console.error("Response data:", err.response?.data);
       setError(err.response?.data?.message || "Failed to reset password");
     }
   };
