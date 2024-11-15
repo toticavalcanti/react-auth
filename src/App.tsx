@@ -9,7 +9,6 @@ import Forgot from "./pages/Forgot";
 import Reset from "./pages/Reset";
 import Nav from "./components/Nav";
 
-// Define o tipo do usuário
 interface User {
   id: number;
   first_name: string;
@@ -21,36 +20,28 @@ function App() {
   const [user, setUser] = useState<User | null>(null);
   const [login, setLogin] = useState(false);
 
-  // Determinar a URL base da API dinamicamente
-  const apiBaseUrl = process.env.REACT_APP_API_URL || "/api";
+  // Configuração do axios
+  axios.defaults.withCredentials = true;
+  const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
 
   useEffect(() => {
     const token = localStorage.getItem("jwt");
-    console.log("Token no App:", token);
-
     if (token) {
-      const authHeader = `Bearer ${token}`;
-      console.log("Auth Header:", authHeader);
-
       const config = {
         headers: {
-          Authorization: authHeader,
+          Authorization: `Bearer ${token}`,
           Accept: "*/*",
           "Content-Type": "application/json",
         },
       };
 
-      console.log("Full config:", JSON.stringify(config));
-
       axios
         .get(`${apiBaseUrl}/user`, config)
         .then((response) => {
-          console.log("Success:", response.data);
           setUser(response.data);
         })
         .catch((error) => {
-          console.log("Full error:", error);
-          console.log("Error response:", error.response);
+          console.error("Error fetching user:", error);
           setUser(null);
           localStorage.removeItem("jwt");
         });
@@ -62,14 +53,13 @@ function App() {
       <Router>
         <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
-          <Route
-            path="/login"
-            element={<Login setLogin={() => setLogin(true)} />}
-          />
+          <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
           <Route path="/" element={<Home user={user} />} />
+          {/* Rota coringa para capturar todas as outras URLs */}
+          <Route path="*" element={<Home user={user} />} />
         </Routes>
       </Router>
     </div>
