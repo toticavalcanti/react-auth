@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || 'http://localhost:3000';
+  return process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
 };
 
 const Register: React.FC = () => {
@@ -32,7 +32,7 @@ const Register: React.FC = () => {
       });
 
       const response = await axios.post(
-        `${apiUrl}/api/register`,
+        `${apiUrl}/register`,
         {
           first_name: firstName,
           last_name: lastName,

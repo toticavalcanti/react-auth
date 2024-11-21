@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, Navigate } from "react-router-dom";
 
 const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || "http://localhost:3000";
+  return process.env.REACT_APP_API_URL || "http://localhost:3000/api";
 };
 
 const Reset = () => {
@@ -49,9 +49,9 @@ const Reset = () => {
     }
 
     try {
-      console.log("Enviando requisição para:", `${apiUrl}/api/reset`);
+      console.log("Enviando requisição para:", `${apiUrl}/reset`);
       const response = await axios.post(
-        `${apiUrl}/api/reset`,
+        `${apiUrl}/reset`,
         {
           token,
           password,

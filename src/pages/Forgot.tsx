@@ -2,7 +2,7 @@ import React, { useState, SyntheticEvent } from 'react';
 import axios from 'axios';
 
 const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || 'http://localhost:3000';
+  return process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
 };
 
 interface NotifyState {
@@ -30,8 +30,8 @@ const Forgot = () => {
     console.log('Email:', email);
 
     try {
-      console.log('Enviando requisição para:', `${apiUrl}/api/forgot`);
-      const response = await axios.post(`${apiUrl}/api/forgot`, {
+      console.log('Enviando requisição para:', `${apiUrl}/forgot`);
+      const response = await axios.post(`${apiUrl}/forgot`, {
         email
       }, {
         headers: {

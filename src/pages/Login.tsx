@@ -4,7 +4,7 @@ import { Navigate, Link } from 'react-router-dom';
 
 // Função para retornar a URL base da API
 const getApiUrl = () => {
-  return process.env.REACT_APP_API_URL || 'http://localhost:3000';
+  return process.env.REACT_APP_API_URL || 'http://localhost:3000/api';
 };
 
 const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }) => {
@@ -23,7 +23,7 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
 
     try {
       console.log('2. Fazendo requisição POST para /login');
-      const response = await axios.post(`${apiUrl}/api/login`, {
+      const response = await axios.post(`${apiUrl}/login`, {
         email,
         password,
       });
