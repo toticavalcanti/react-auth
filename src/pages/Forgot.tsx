@@ -25,8 +25,13 @@ const Forgot = () => {
     setLoading(true);
     setNotify({ show: false, error: false, message: '' });
 
+    const apiUrl = getApiUrl();
+    console.log('API URL:', apiUrl);
+    console.log('Email:', email);
+
     try {
-      await axios.post(`${getApiUrl()}/api/forgot`, {
+      console.log('Enviando requisição para:', `${apiUrl}/api/forgot`);
+      const response = await axios.post(`${apiUrl}/api/forgot`, {
         email
       }, {
         headers: {
@@ -35,31 +40,23 @@ const Forgot = () => {
         withCredentials: true
       });
 
+      console.log('Resposta:', response.data);
       setNotify({
         show: true,
         error: false,
         message: 'Password reset instructions have been sent to your email'
       });
-      
-      // Limpa o campo de email após sucesso
       setEmail('');
-    } catch (error: any) {
-      let errorMessage = 'An error occurred while processing your request';
-      
-      if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
-      }
+    } catch (err: any) {
+      console.error('Erro completo:', err);
+      console.error('Resposta do erro:', err.response);
+      console.error('Dados do erro:', err.response?.data);
 
       setNotify({
         show: true,
         error: true,
-        message: errorMessage
+        message: err.response?.data?.message || 'Error sending email'
       });
-
-      // Log detalhado apenas em desenvolvimento
-      if (process.env.REACT_APP_LOG_LEVEL === 'debug') {
-        console.error('Password reset request error:', error);
-      }
     } finally {
       setLoading(false);
     }
