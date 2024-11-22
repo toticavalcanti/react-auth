@@ -3,7 +3,7 @@ import { useParams, Navigate } from "react-router-dom";
 import axios from "axios";
 
 const Reset = () => {
-  const { token } = useParams(); // Captura o token da URL
+  const { token } = useParams();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
@@ -32,9 +32,8 @@ const Reset = () => {
     }
 
     try {
-      // Envia o token, a nova senha e a confirmação da senha ao backend
       await axios.post(`${getApiUrl()}/api/reset`, {
-        token, // O token capturado da URL
+        token,
         password,
         confirm_password: confirmPassword,
       });
