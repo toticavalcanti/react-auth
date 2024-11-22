@@ -57,41 +57,24 @@ const Reset = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: "400px", margin: "0 auto" }}>
+    <form onSubmit={handleSubmit}>
       <h1>Redefinir Senha</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <div style={{ marginBottom: "10px" }}>
-        <input
-          type="password"
-          placeholder="Nova Senha"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        />
-      </div>
-      <div style={{ marginBottom: "10px" }}>
-        <input
-          type="password"
-          placeholder="Confirme a Nova Senha"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-        />
-      </div>
-      <button
-        type="submit"
-        disabled={loading}
-        style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
+      <input
+        type="password"
+        placeholder="Nova Senha"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <input
+        type="password"
+        placeholder="Confirme a Nova Senha"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+      />
+      <button type="submit" disabled={loading}>
         {loading ? "Processando..." : "Redefinir Senha"}
       </button>
     </form>
