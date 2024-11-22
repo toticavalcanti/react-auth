@@ -50,10 +50,11 @@ const Reset = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="form-floating" onSubmit={handleSubmit}>
       <h1>Redefinir Senha</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p className="text-body-secondary" style={{ color: "red" }}>{error}</p>}
       <input
+        className="form-signin"
         type="password"
         placeholder="Nova Senha"
         value={password}
@@ -61,13 +62,14 @@ const Reset = () => {
         required
       />
       <input
+        className="form-signin"
         type="password"
         placeholder="Confirme a Nova Senha"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
         required
       />
-      <button type="submit" disabled={loading}>
+      <button className="btn btn-primary" type="submit" disabled={loading}>
         {loading ? "Processando..." : "Redefinir Senha"}
       </button>
     </form>
