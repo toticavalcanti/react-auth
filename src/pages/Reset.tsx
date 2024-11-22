@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import axios from "axios";
 
-const Reset = () => {
+const Reset: React.FC = () => {
   const { token } = useParams<{ token: string }>(); // Captura o token da URL
+  console.log("Token recebido:", token); // Log para verificar o token
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
@@ -14,13 +16,6 @@ const Reset = () => {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    // Validações
-    if (!token) {
-      setError("Token inválido ou ausente.");
-      setLoading(false);
-      return;
-    }
 
     if (password.length < 6) {
       setError("A senha deve ter pelo menos 6 caracteres.");
@@ -35,23 +30,20 @@ const Reset = () => {
     }
 
     try {
-      // Envia a requisição para a API
+      // Envia os dados para o backend
       await axios.post(`${process.env.REACT_APP_API_URL}/api/reset`, {
         token,
         password,
         confirm_password: confirmPassword,
       });
-
       setSuccess(true);
     } catch (err: any) {
-      // Trata erros da requisição
       setError(err.response?.data?.message || "Erro ao redefinir a senha.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Redireciona para a página de login após o sucesso
   if (success) {
     return <Navigate to="/login" />;
   }
