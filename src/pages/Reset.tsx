@@ -49,9 +49,9 @@ const Reset = () => {
     }
 
     try {
-      console.log("Enviando requisição para:", `${apiUrl}/reset`);
+      console.log("Enviando requisição para:", `${apiUrl}/api/reset`);
       const response = await axios.post(
-        `${apiUrl}/reset`,
+        `${apiUrl}/api/reset`,
         {
           token,
           password,

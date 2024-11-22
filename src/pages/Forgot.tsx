@@ -30,8 +30,8 @@ const Forgot = () => {
     console.log('Email:', email);
 
     try {
-      console.log('Enviando requisição para:', `${apiUrl}/forgot`);
-      const response = await axios.post(`${apiUrl}/forgot`, {
+      console.log('Enviando requisição para:', `${apiUrl}/api/forgot`);
+      const response = await axios.post(`${apiUrl}/api/forgot`, {
         email
       }, {
         headers: {

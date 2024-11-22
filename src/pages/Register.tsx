@@ -32,7 +32,7 @@ const Register: React.FC = () => {
       });
 
       const response = await axios.post(
-        `${apiUrl}/register`,
+        `${apiUrl}/api/register`,
         {
           first_name: firstName,
           last_name: lastName,

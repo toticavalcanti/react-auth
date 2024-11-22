@@ -23,7 +23,7 @@ const Login: React.FC<{ setLogin: (loggedIn: boolean) => void }> = ({ setLogin }
 
     try {
       console.log('2. Fazendo requisição POST para /login');
-      const response = await axios.post(`${apiUrl}/login`, {
+      const response = await axios.post(`${apiUrl}/api/login`, {
         email,
         password,
       });
