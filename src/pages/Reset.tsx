@@ -11,7 +11,7 @@ const Reset = () => {
   const [loading, setLoading] = useState(false);
 
   const getApiUrl = () => {
-    return process.env.REACT_APP_API_URL || "http://localhost:8080"; // Fallback para desenvolvimento
+    return process.env.REACT_APP_API_URL || "http://localhost:8080";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,15 +33,13 @@ const Reset = () => {
 
     try {
       // Envia o token, a nova senha e a confirmação da senha ao backend
-      const response = await axios.post(`${getApiUrl()}/api/reset`, {
-        token, // Token capturado da URL
+      await axios.post(`${getApiUrl()}/api/reset`, {
+        token, // O token capturado da URL
         password,
         confirm_password: confirmPassword,
       });
-      console.log("Resposta do backend:", response.data);
       setSuccess(true);
     } catch (err: any) {
-      console.error("Erro ao redefinir a senha:", err.response?.data || err);
       setError(err.response?.data?.message || "Erro ao redefinir a senha.");
     } finally {
       setLoading(false);

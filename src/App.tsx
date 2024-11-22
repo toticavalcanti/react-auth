@@ -56,7 +56,7 @@
 
     return (
       <div className="App">
-        <Router basename="/">
+        <Router>
           <Nav user={user} setLogin={() => setLogin(false)} />
           <Routes>
             <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
