@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -36,13 +36,9 @@ function App() {
         },
       };
 
-      console.log("Fetching user with token:", token);
-      console.log("URL usada:", `${apiBaseUrl}/api/user`);
-
       axios
         .get(`${apiBaseUrl}/api/user`, config)
         .then((response) => {
-          console.log("Resposta da API /user:", response.data);
           setUser(response.data);
         })
         .catch((error) => {
@@ -55,17 +51,17 @@ function App() {
 
   return (
     <div className="App">
-      <Router>
+      <BrowserRouter>
         <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
+          <Route path="/" element={<Home user={user} />} />
           <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
           <Route path="/reset/:token" element={<Reset />} />
-          <Route path="/" element={<Home user={user} />} />
-          <Route path="*" element={<Home user={user} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
+      </BrowserRouter>
     </div>
   );
 }
