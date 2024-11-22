@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import axios from "axios";
 
-const Reset: React.FC = () => {
-  const { token } = useParams<{ token: string }>(); // Captura o token da URL
-  console.log("Token recebido:", token); // Log para verificar o token
-
+const Reset = () => {
+  const { token } = useParams(); // Captura o token da URL
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const getApiUrl = () => {
+    return process.env.REACT_APP_API_URL || "http://localhost:8080";
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,9 +32,9 @@ const Reset: React.FC = () => {
     }
 
     try {
-      // Envia os dados para o backend
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/reset`, {
-        token,
+      // Envia o token, a nova senha e a confirmação da senha ao backend
+      await axios.post(`${getApiUrl()}/api/reset`, {
+        token, // O token capturado da URL
         password,
         confirm_password: confirmPassword,
       });
