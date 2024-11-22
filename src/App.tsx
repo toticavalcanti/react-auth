@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HashRouter as Router, Routes, Route } from "react-router-dom"; // Mudança aqui
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -58,6 +58,7 @@ function App() {
       <Router>
         <Nav user={user} setLogin={() => setLogin(false)} />
         <Routes>
+          {/* Agora as rotas serão acessadas com # */}
           <Route path="/login" element={<Login setLogin={() => setLogin(true)} />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot" element={<Forgot />} />
