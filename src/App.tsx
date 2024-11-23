@@ -1,13 +1,14 @@
-  import React, { useState, useEffect } from "react";
-  import axios from "axios";
-  import "./App.css";
-  import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-  import Login from "./pages/Login";
-  import Home from "./pages/Home";
-  import Register from "./pages/Register";
-  import Forgot from "./pages/Forgot";
-  import Reset from "./pages/Reset";
-  import Nav from "./components/Nav";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import Forgot from "./pages/Forgot";
+import Reset from "./pages/Reset";
+import Nav from "./components/Nav";
+import { startHealthCheck } from "./utils/healthCheck";
 
   interface User {
     id: number;
@@ -19,15 +20,20 @@
   function App() {
     const [user, setUser] = useState<User | null>(null);
     const [login, setLogin] = useState(false);
-
+  
     // Configuração global do axios
     axios.defaults.withCredentials = true;
     const apiBaseUrl = process.env.REACT_APP_API_URL || "http://localhost:8080/api";
-
+  
+    // Health Check Effect
+    useEffect(() => {
+      startHealthCheck();
+    }, []);
+  
+    // User Authentication Effect
     useEffect(() => {
       const token = localStorage.getItem("jwt");
-
-      
+  
       if (token) {
         const config = {
           headers: {
@@ -36,10 +42,10 @@
             "Content-Type": "application/json",
           },
         };
-
+  
         console.log("Fetching user with token:", token);
         console.log("URL usada:", `${apiBaseUrl}/api/user`);
-
+  
         axios
           .get(`${apiBaseUrl}/api/user`, config)
           .then((response) => {
