@@ -1,5 +1,13 @@
 .App, #root {
   width: 100%;
   height: 100%;
+  margin: 0; /* Remove qualquer margem adicional */
   position: absolute;
+}
+
+nav.navbar {
+  margin: 0; /* Garante que o navbar não tenha margens */
+  padding: 0; /* Remove qualquer padding extra */
+  top: 0; /* Cola o navbar no topo */
+  width: 100%; /* Garante que o navbar ocupe toda a largura */
 }
