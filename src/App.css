@@ -7,6 +7,41 @@ body {
   margin: 10px 0;
 }
 
+.App, #root {
+  width: 100%;
+  height: 100%;
+  margin: 0; /* Remove qualquer margem adicional */
+  position: absolute;
+}
+
+nav.navbar {
+  margin: 0; /* Garante que o navbar não tenha margens */
+  padding: 0; /* Remove qualquer padding extra */
+  top: 0; /* Cola o navbar no topo */
+  width: 100%; /* Garante que o navbar ocupe toda a largura */
+}
+
+/* Adiciona padding ao conteúdo abaixo do navbar para evitar sobreposição */
+body {
+  padding-top: 56px; /* Altura do navbar */
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-dark .navbar-toggler-icon {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.navbar-nav .nav-link {
+  color: white; /* Mantém a cor branca para links do menu */
+}
+
+.collapse.show {
+  display: block !important;
+}
+
 /* Estilo para o formulário */
 .form-floating {
   max-width: 330px;
