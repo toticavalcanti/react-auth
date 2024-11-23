@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import axios from "axios";
 
+const getApiUrl = () => {
+  return process.env.REACT_APP_API_URL || "http://localhost:8080";
+};
+
 const Reset = () => {
-  const { token } = useParams();
+  const { token } = useParams(); // Captura o token da URL
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-
-  const getApiUrl = () => {
-    return process.env.REACT_APP_API_URL || "http://localhost:8080";
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,8 +32,9 @@ const Reset = () => {
     }
 
     try {
+      // Envia o token, a nova senha e a confirmação da senha ao backend
       await axios.post(`${getApiUrl()}/api/reset`, {
-        token,
+        token, // O token capturado da URL
         password,
         confirm_password: confirmPassword,
       });
@@ -51,27 +52,45 @@ const Reset = () => {
 
   return (
     <form className="form-floating" onSubmit={handleSubmit}>
-      <h1>Redefinir Senha</h1>
-      {error && <p className="text-body-secondary" style={{ color: "red" }}>{error}</p>}
-      <input
-        className="form-signin"
-        type="password"
-        placeholder="Nova Senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      <input
-        className="form-signin"
-        type="password"
-        placeholder="Confirme a Nova Senha"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        required
-      />
-      <button className="btn btn-primary" type="submit" disabled={loading}>
+      <h1 className="h3 mb-3 fw-normal">Redefinir Senha</h1>
+
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
+
+      <div className="form-signin">
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Nova Senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <div className="form-signin">
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Confirme a Nova Senha"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+      </div>
+
+      <button
+        className="form-signin btn btn-primary w-100 py-2"
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Processando..." : "Redefinir Senha"}
       </button>
+
+      <p className="mt-5 mb-3 text-body-secondary">&copy; 2024</p>
     </form>
   );
 };
